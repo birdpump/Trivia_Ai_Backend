@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    function test(){
+        socket.emit('create_game', { id: 8, code: 9999 });
+    }
+
+    function test1(){
+        let testdat = prompt("test");
+        socket.emit('join', { test: testdat});
+    }
+
+    socket.on("get", () => {
+        console.log("allat")
+    });
+
+
+
+
+
+
+</script>
+<button onclick="test()">run1</button>
+
+<button onclick="test1()">run2</button>
+</body>
+</html>
