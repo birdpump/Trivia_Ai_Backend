@@ -1,27 +1,27 @@
 import {createClient} from 'redis';
 
+import express from 'express';
+const app = express();
+import http from 'http';
+const server = http.createServer(app);
+app.use(express.static('trivia_ai_frontend/dist'));
+
+import { Server } from "socket.io";
+const io = new Server(server);
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+
 const client = createClient({
     socket: {
         host: '10.0.0.43',
         port: '6379'
     }
 });
-
 client.on('error', err => console.log('Redis Client Error', err));
 
-
-
-
-import express from 'express';
-const app = express();
-import http from 'http';
-const server = http.createServer(app);
-app.use(express.static('trivia_ai_frontend/dist'));
-import { Server } from "socket.io";
-const io = new Server(server);
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", async function (req, res) {
     return res.sendFile(__dirname + '/trivia_ai_frontend/dist/index.html');
@@ -45,10 +45,10 @@ io.on('connection', async (socket) => {
 
     socket.on('create_game', () => {
 
-        //check if num exists in redis
+        //TODO check if key exists in redis
         const randomNumber = Math.floor(Math.random() * 900000) + 100000;
         console.log(randomNumber);
-
+        
         socket.join(`${randomNumber}`);
 
     });
