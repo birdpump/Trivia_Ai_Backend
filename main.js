@@ -42,21 +42,32 @@ io.on('connection', async (socket) => {
     // const rooms = io.sockets.adapter.rooms;
     await sendData();
 
-
+    //gets the prompt and runs all the ai and creates the game key in redis
     socket.on('create_game', () => {
 
-        //TODO check if key exists in redis
+        //TODO check if key exists in redis and create game template in redis
         const randomNumber = Math.floor(Math.random() * 900000) + 100000;
         console.log(randomNumber);
-        
+
+        //creates socket room
         socket.join(`${randomNumber}`);
 
     });
 
+    //game pin from client
     socket.on('join', (data) => {
+        //TODO make sure that room works as intended
+        socket.join(data.id);
 
-        socket.join(data.test);
-        io.to(data.test).emit("get");
+        //change user screen on join_success
+        io.to(data.id).emit("join_success");
+    });
+
+    //run the game by sending inital state to all player clients
+    socket.on('gData_emit', (data) => {
+        //TODO emit the gaem data
+        io.to(data.id).emit("gData_push");
+
     });
 
 });
@@ -66,3 +77,4 @@ server.listen(6060, () => {
     console.log('listening on *:3000');
 });
 
+//TODO implement 
